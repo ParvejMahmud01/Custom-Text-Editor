@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_rich_text_editor.dart';
+import 'text_editor/custom_rich_text_editor.dart';
 
 class EditorHomeScreen extends StatefulWidget {
   const EditorHomeScreen({super.key});
@@ -14,6 +14,13 @@ class _EditorHomeScreenState extends State<EditorHomeScreen> {
       GlobalKey<CustomRichTextEditorState>();
 
   String _plainText = '';
+  final TextEditingController _bodyController = TextEditingController();
+
+  @override
+  void dispose() {
+    _bodyController.dispose();
+    super.dispose();
+  }
 
   void _submitDocument() {
     final editor = _editorKey.currentState;
@@ -116,6 +123,8 @@ class _EditorHomeScreenState extends State<EditorHomeScreen> {
                           ),
                           const SizedBox(height: 14),
                           CustomRichTextEditor(
+                            controller: _bodyController,
+                            onInsertMarkup: (value) {},
                             key: _editorKey,
                             hintText: 'Start writing your document...',
                             minHeight: 450,
