@@ -1,7 +1,11 @@
 name: custom_editor
 description: "A new Flutter project."
 publish_to: 'none' 
+version: 1.0.0
 
+homepage: https://github.com/ParvejMahmud01/Custom-Text-Editor
+repository: https://github.com/ParvejMahmud01/Custom-Text-Editor
+issue_tracker: https://github.com/ParvejMahmud01/Custom-Text-Editor/issues
 environment:
   sdk: ^3.13.4
 
