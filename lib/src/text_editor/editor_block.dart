@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:custom_editor/src/text_editor/editor_enums.dart';
-import 'package:custom_editor/src/text_editor/editor_style_range.dart';
+import 'package:html_text_editor/src/text_editor/editor_enums.dart';
+import 'package:html_text_editor/src/text_editor/editor_style_range.dart';
 import 'package:uuid/uuid.dart';
 
 class EditorBlock {

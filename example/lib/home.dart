@@ -1,4 +1,4 @@
-import 'package:custom_editor/custom_editor.dart';
+import 'package:html_text_editor/custom_editor.dart';
 import 'package:flutter/material.dart';
 
 class EditorHomeScreen extends StatefulWidget {
