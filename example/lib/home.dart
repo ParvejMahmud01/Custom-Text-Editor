@@ -1,6 +1,5 @@
+import 'package:custom_editor/custom_editor.dart';
 import 'package:flutter/material.dart';
-
-import 'text_editor/custom_rich_text_editor.dart';
 
 class EditorHomeScreen extends StatefulWidget {
   const EditorHomeScreen({super.key});

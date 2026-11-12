@@ -1,5 +1,5 @@
-import 'package:custom_editor/text_editor/editor_enums.dart';
-import 'package:custom_editor/widgets/shap_canvas_painter.dart';
+import 'package:custom_editor/src/text_editor/editor_enums.dart';
+import 'package:custom_editor/src/widgets/shap_canvas_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

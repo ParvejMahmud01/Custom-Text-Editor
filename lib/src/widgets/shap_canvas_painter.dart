@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:custom_editor/text_editor/editor_enums.dart';
+import 'package:custom_editor/src/text_editor/editor_enums.dart';
 import 'package:flutter/material.dart';
 
 class ShapeCanvasPainter extends CustomPainter {

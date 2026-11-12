@@ -1,4 +1,4 @@
-import 'package:custom_editor/text_editor/editor_style_range.dart';
+import 'package:custom_editor/src/text_editor/editor_style_range.dart';
 import 'package:flutter/material.dart';
 
 class RichTextController extends TextEditingController {

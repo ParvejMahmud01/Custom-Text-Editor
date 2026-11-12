@@ -3,14 +3,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:custom_editor/text_editor/editor_block.dart';
-import 'package:custom_editor/text_editor/editor_enums.dart';
-import 'package:custom_editor/text_editor/editor_style_range.dart';
-import 'package:custom_editor/text_editor/insert_link_dialog.dart';
-import 'package:custom_editor/text_editor/rich_text_controller.dart';
-import 'package:custom_editor/widgets/import_image_shape_sheet.dart';
-import 'package:custom_editor/widgets/insert_shap_sheet.dart';
-import 'package:custom_editor/widgets/shape_preview_painter.dart';
+import 'package:custom_editor/src/text_editor/editor_block.dart';
+import 'package:custom_editor/src/text_editor/editor_enums.dart';
+import 'package:custom_editor/src/text_editor/editor_style_range.dart';
+import 'package:custom_editor/src/text_editor/insert_link_dialog.dart';
+import 'package:custom_editor/src/text_editor/rich_text_controller.dart';
+import 'package:custom_editor/src/widgets/import_image_shape_sheet.dart';
+import 'package:custom_editor/src/widgets/insert_shap_sheet.dart';
+import 'package:custom_editor/src/widgets/shape_preview_painter.dart';
 import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
