@@ -27,6 +27,18 @@ class CustomRichTextEditor extends StatefulWidget {
   final bool isItalic;
   final bool isUnderLine;
   final bool isStrikeThrough;
+  final bool isParagraph;
+  final bool numbericPoint;
+  final bool bulletPoint;
+  final bool isAlighnment;
+  final bool isLinkConvert;
+  final bool isImage;
+  final bool isShape;
+  final bool isTable;
+  final bool isSelectFontSize;
+  final bool textColor;
+  final bool heighlight;
+
   const CustomRichTextEditor({
     super.key,
     this.initialText = '',
@@ -40,6 +52,17 @@ class CustomRichTextEditor extends StatefulWidget {
     this.isItalic = true,
     this.isUnderLine = true,
     this.isStrikeThrough = true,
+    this.isParagraph = true,
+    this.numbericPoint = true,
+    this.bulletPoint = true,
+    this.isAlighnment = true,
+    this.isLinkConvert = true,
+    this.isImage = true,
+    this.isShape = true,
+    this.isTable = true,
+    this.isSelectFontSize = true,
+    this.textColor = true,
+    this.heighlight = true,
   });
 
   @override
@@ -980,48 +1003,51 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<EditorBlockType>(
-                      value: headingValue,
-                      isDense: true,
-                      icon: const Icon(Icons.unfold_more_rounded, size: 15),
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF334155),
+                //!paragraph dropdown
+                if (widget.isParagraph)
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<EditorBlockType>(
+                        value: headingValue,
+                        isDense: true,
+                        icon: const Icon(Icons.unfold_more_rounded, size: 15),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF334155),
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: EditorBlockType.paragraph,
+                            child: Text('Paragraph'),
+                          ),
+                          DropdownMenuItem(
+                            value: EditorBlockType.heading1,
+                            child: Text('Heading 1'),
+                          ),
+                          DropdownMenuItem(
+                            value: EditorBlockType.heading2,
+                            child: Text('Heading 2'),
+                          ),
+                          DropdownMenuItem(
+                            value: EditorBlockType.heading3,
+                            child: Text('Heading 3'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) _applyHeading(value);
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: EditorBlockType.paragraph,
-                          child: Text('Paragraph'),
-                        ),
-                        DropdownMenuItem(
-                          value: EditorBlockType.heading1,
-                          child: Text('Heading 1'),
-                        ),
-                        DropdownMenuItem(
-                          value: EditorBlockType.heading2,
-                          child: Text('Heading 2'),
-                        ),
-                        DropdownMenuItem(
-                          value: EditorBlockType.heading3,
-                          child: Text('Heading 3'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) _applyHeading(value);
-                      },
                     ),
                   ),
-                ),
+
                 if (widget.isBold ||
                     widget.isItalic ||
                     widget.isUnderLine ||
@@ -1083,107 +1109,127 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
                               : controller.typingStyles.contains('strike')),
                     ),
                 ],
-                _verticalDivider(),
-                _iconPill(
-                  Icons.format_list_bulleted_rounded,
-                  () => _applyList(EditorBlockType.bulletList),
-                  tooltip: 'Bullet List',
-                ),
-                _iconPill(
-                  Icons.format_list_numbered_rounded,
-                  () => _applyList(EditorBlockType.numberedList),
-                  tooltip: 'Numbered List',
-                ),
-                _verticalDivider(),
-                _iconPill(
-                  Icons.format_align_left_rounded,
-                  () => _applyAlignment(TextAlign.left),
-                  tooltip: 'Align Left',
-                  active: _selectedBlock?.alignment == TextAlign.left,
-                ),
-                _iconPill(
-                  Icons.format_align_center_rounded,
-                  () => _applyAlignment(TextAlign.center),
-                  tooltip: 'Align Center',
-                  active: _selectedBlock?.alignment == TextAlign.center,
-                ),
-                _iconPill(
-                  Icons.format_align_right_rounded,
-                  () => _applyAlignment(TextAlign.right),
-                  tooltip: 'Align Right',
-                  active: _selectedBlock?.alignment == TextAlign.right,
-                ),
-                _iconPill(
-                  Icons.format_align_justify_rounded,
-                  () => _applyAlignment(TextAlign.justify),
-                  tooltip: 'Justify',
-                  active: _selectedBlock?.alignment == TextAlign.justify,
-                ),
-                _verticalDivider(),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
+
+                if (widget.numbericPoint || widget.bulletPoint) ...[
+                  _verticalDivider(),
+
+                  if (widget.bulletPoint)
+                    _iconPill(
+                      Icons.format_list_bulleted_rounded,
+                      () => _applyList(EditorBlockType.bulletList),
+                      tooltip: 'Bullet List',
+                    ),
+
+                  if (widget.numbericPoint)
+                    _iconPill(
+                      Icons.format_list_numbered_rounded,
+                      () => _applyList(EditorBlockType.numberedList),
+                      tooltip: 'Numbered List',
+                    ),
+                ],
+                if (widget.isAlighnment) ...[
+                  _verticalDivider(),
+                  _iconPill(
+                    Icons.format_align_left_rounded,
+                    () => _applyAlignment(TextAlign.left),
+                    tooltip: 'Align Left',
+                    active: _selectedBlock?.alignment == TextAlign.left,
                   ),
-                  child: DropdownButton<String>(
-                    value: _fontSizes.contains(_selectedFontSize)
-                        ? _selectedFontSize
-                        : '16px',
-                    items: _fontSizes.map((size) {
-                      return DropdownMenuItem<String>(
-                        value: size,
-                        child: Text(size),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value == null) return;
-
-                      final index = _selectedIndex;
-                      if (index < 0 || index >= _blocks.length) return;
-
-                      setState(() {
-                        _selectedFontSize = value;
-                        _blocks[index].fontSize = double.parse(
-                          value.replaceAll('px', ''),
+                  _iconPill(
+                    Icons.format_align_center_rounded,
+                    () => _applyAlignment(TextAlign.center),
+                    tooltip: 'Align Center',
+                    active: _selectedBlock?.alignment == TextAlign.center,
+                  ),
+                  _iconPill(
+                    Icons.format_align_right_rounded,
+                    () => _applyAlignment(TextAlign.right),
+                    tooltip: 'Align Right',
+                    active: _selectedBlock?.alignment == TextAlign.right,
+                  ),
+                  _iconPill(
+                    Icons.format_align_justify_rounded,
+                    () => _applyAlignment(TextAlign.justify),
+                    tooltip: 'Justify',
+                    active: _selectedBlock?.alignment == TextAlign.justify,
+                  ),
+                  _verticalDivider(),
+                ],
+                if (widget.isSelectFontSize)
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: DropdownButton<String>(
+                      value: _fontSizes.contains(_selectedFontSize)
+                          ? _selectedFontSize
+                          : '16px',
+                      items: _fontSizes.map((size) {
+                        return DropdownMenuItem<String>(
+                          value: size,
+                          child: Text(size),
                         );
-                      });
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
 
-                      _notifyDocumentChanged();
-                    },
+                        final index = _selectedIndex;
+                        if (index < 0 || index >= _blocks.length) return;
+
+                        setState(() {
+                          _selectedFontSize = value;
+                          _blocks[index].fontSize = double.parse(
+                            value.replaceAll('px', ''),
+                          );
+                        });
+
+                        _notifyDocumentChanged();
+                      },
+                    ),
                   ),
-                ),
-                _verticalDivider(),
-                _iconPill(
-                  Icons.link_rounded,
-                  _insertLink,
-                  tooltip: 'Insert Link',
-                ),
-                // _iconPill(
-                //   Icons.link_off_rounded,
-                //   _removeLink,
-                //   tooltip: 'Remove Link',
-                // ),
-                _iconPill(
-                  Icons.image_outlined,
-                  _insertImage,
-                  tooltip: 'Insert Image',
-                  color: const Color(0xFF2563EB),
-                ),
-                _iconPill(
-                  Icons.diamond_outlined,
-                  _insertShape,
-                  tooltip: 'Insert Shape',
-                  color: const Color(0xFFE11D48),
-                ),
-                _iconPill(
-                  Icons.table_chart_outlined,
-                  _insertTable,
-                  tooltip: 'Insert Table',
-                  color: const Color(0xFF2563EB),
-                ),
+                if (widget.isLinkConvert ||
+                    widget.isImage ||
+                    widget.isShape ||
+                    widget.isTable) ...[
+                  _verticalDivider(),
+                  if (widget.isLinkConvert)
+                    _iconPill(
+                      Icons.link_rounded,
+                      _insertLink,
+                      tooltip: 'Insert Link',
+                    ),
+                  // _iconPill(
+                  //   Icons.link_off_rounded,
+                  //   _removeLink,
+                  //   tooltip: 'Remove Link',
+                  // ),
+                  if (widget.isImage)
+                    _iconPill(
+                      Icons.image_outlined,
+                      _insertImage,
+                      tooltip: 'Insert Image',
+                      color: const Color(0xFF2563EB),
+                    ),
+                  if (widget.isShape)
+                    _iconPill(
+                      Icons.diamond_outlined,
+                      _insertShape,
+                      tooltip: 'Insert Shape',
+                      color: const Color(0xFFE11D48),
+                    ),
+                  if (widget.isTable)
+                    _iconPill(
+                      Icons.table_chart_outlined,
+                      _insertTable,
+                      tooltip: 'Insert Table',
+                      color: const Color(0xFF2563EB),
+                    ),
+                ],
+
                 _iconPill(
                   Icons.add,
                   _insertParagraph,
@@ -1228,16 +1274,18 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
                 //   _insertHorizontalRule,
                 //   tooltip: 'Insert Horizontal Divider',
                 // ),
-                _colorPill(
-                  'Text Color',
-                  const Color(0xFF1B365D),
-                  () => _applyTextColor(highlight: false),
-                ),
-                _colorPill(
-                  'Highlight',
-                  const Color(0xFFFEF08A),
-                  () => _applyTextColor(highlight: true),
-                ),
+                if (widget.textColor)
+                  _colorPill(
+                    'Text Color',
+                    const Color(0xFF1B365D),
+                    () => _applyTextColor(highlight: false),
+                  ),
+                if (widget.heighlight)
+                  _colorPill(
+                    'Highlight',
+                    const Color(0xFFFEF08A),
+                    () => _applyTextColor(highlight: true),
+                  ),
                 if (isTable)
                   const Padding(
                     padding: EdgeInsets.only(left: 8),

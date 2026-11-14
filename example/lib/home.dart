@@ -127,6 +127,7 @@ class _EditorHomeScreenState extends State<EditorHomeScreen> {
                             key: _editorKey,
                             hintText: 'Start writing your document...',
                             minHeight: 450,
+
                             onChanged: (value) {
                               setState(() {
                                 _plainText = value;
