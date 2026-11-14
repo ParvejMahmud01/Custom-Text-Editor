@@ -6,8 +6,14 @@ import 'package:image_picker/image_picker.dart';
 
 class ImportPositionImageSheet extends StatefulWidget {
   final ValueChanged<String> onInsertImage;
-
-  const ImportPositionImageSheet({super.key, required this.onInsertImage});
+  final Color borderColor;
+  final Color selectedTabColor;
+  const ImportPositionImageSheet({
+    super.key,
+    required this.onInsertImage,
+    this.borderColor = Colors.red,
+    this.selectedTabColor = Colors.red,
+  });
 
   static Future<void> show(
     BuildContext context,
@@ -202,7 +208,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: widget.borderColor),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -356,7 +362,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.deepPurple,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -421,8 +427,8 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: _pickedFile != null
-                                ? Colors.black
-                                : Colors.black,
+                                ? widget.borderColor
+                                : widget.borderColor,
                           ),
                         ),
                         child: Row(
@@ -488,12 +494,19 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Colors.black),
+                          borderSide: BorderSide(color: widget.borderColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Colors.black,
+                          borderSide: BorderSide(
+                            color: widget.borderColor,
+                            width: 1.2,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: widget.borderColor,
                             width: 1.2,
                           ),
                         ),
@@ -633,8 +646,15 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.black,
+                        borderSide: BorderSide(
+                          color: widget.borderColor,
+                          width: 1.2,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: widget.borderColor,
                           width: 1.2,
                         ),
                       ),
@@ -651,7 +671,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
             ),
           ),
 
-          const Divider(height: 1, color: Colors.black),
+          Divider(height: 1, color: widget.borderColor),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
@@ -703,6 +723,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
               ],
             ),
           ),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -723,10 +744,10 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.black : Colors.white,
+          color: isSelected ? widget.selectedTabColor : Colors.white,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? Colors.black : Colors.black,
+            color: isSelected ? widget.selectedTabColor : widget.borderColor,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -781,7 +802,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black, width: 0.9),
+            border: Border.all(color: widget.borderColor, width: 0.9),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(

@@ -21,23 +21,23 @@ class _EditorHomeScreenState extends State<EditorHomeScreen> {
     super.dispose();
   }
 
-  void _submitDocument() {
-    final editor = _editorKey.currentState;
+  // void _submitDocument() {
+  //   final editor = _editorKey.currentState;
 
-    if (editor == null) return;
+  //   if (editor == null) return;
 
-    final html = editor.toHtml();
-    final json = editor.toJsonString();
-    final text = editor.toPlainText();
+  //   final html = editor.toHtml();
+  //   final json = editor.toJsonString();
+  //   final text = editor.toPlainText();
 
-    debugPrint('HTML: $html');
-    debugPrint('JSON: $json');
-    debugPrint('TEXT: $text');
+  //   debugPrint('HTML: $html');
+  //   debugPrint('JSON: $json');
+  //   debugPrint('TEXT: $text');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Document data generated successfully')),
-    );
-  }
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text('Document data generated successfully')),
+  //   );
+  // }
 
   void _previewDocument() {
     final html = _editorKey.currentState?.toHtml() ?? '';
@@ -165,19 +165,19 @@ class _EditorHomeScreenState extends State<EditorHomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: _submitDocument,
-                      icon: const Icon(Icons.check),
-                      label: const Text('Submit'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00897B),
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(0, 48),
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(width: 12),
+                  // Expanded(
+                  //   child: ElevatedButton.icon(
+                  //     onPressed: _submitDocument,
+                  //     icon: const Icon(Icons.check),
+                  //     label: const Text('Submit'),
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: const Color(0xFF00897B),
+                  //       foregroundColor: Colors.white,
+                  //       minimumSize: const Size(0, 48),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
