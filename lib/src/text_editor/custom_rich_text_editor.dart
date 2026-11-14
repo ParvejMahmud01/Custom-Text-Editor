@@ -23,6 +23,10 @@ class CustomRichTextEditor extends StatefulWidget {
   final ValueChanged<List<EditorBlock>>? onDocumentChanged;
   final TextEditingController controller;
   final ValueChanged<String> onInsertMarkup;
+  final bool isBold;
+  final bool isItalic;
+  final bool isUnderLine;
+  final bool isStrikeThrough;
   const CustomRichTextEditor({
     super.key,
     this.initialText = '',
@@ -32,6 +36,10 @@ class CustomRichTextEditor extends StatefulWidget {
     this.onDocumentChanged,
     required this.controller,
     required this.onInsertMarkup,
+    this.isBold = true,
+    this.isItalic = true,
+    this.isUnderLine = true,
+    this.isStrikeThrough = true,
   });
 
   @override
@@ -1014,56 +1022,67 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
                     ),
                   ),
                 ),
-                _verticalDivider(),
-                _textPill(
-                  'B',
-                  () => _toggleStyle('bold'),
-                  tooltip: 'Bold',
-                  bold: true,
-                  active:
-                      controller != null &&
-                      (controller.selection.isValid &&
-                              !controller.selection.isCollapsed
-                          ? controller.isStyleActive('bold')
-                          : controller.typingStyles.contains('bold')),
-                ),
-                _textPill(
-                  'I',
-                  () => _toggleStyle('italic'),
-                  tooltip: 'Italic',
-                  italic: true,
-                  active:
-                      controller != null &&
-                      (controller.selection.isValid &&
-                              !controller.selection.isCollapsed
-                          ? controller.isStyleActive('italic')
-                          : controller.typingStyles.contains('boitalicld')),
-                ),
-                _textPill(
-                  'U',
-                  () => _toggleStyle('underline'),
-                  tooltip: 'Underline',
-                  underline: true,
+                if (widget.isBold ||
+                    widget.isItalic ||
+                    widget.isUnderLine ||
+                    widget.isStrikeThrough) ...[
+                  _verticalDivider(),
 
-                  active:
-                      controller != null &&
-                      (controller.selection.isValid &&
-                              !controller.selection.isCollapsed
-                          ? controller.isStyleActive('underline')
-                          : controller.typingStyles.contains('underline')),
-                ),
-                _textPill(
-                  'S',
-                  () => _toggleStyle('strike'),
-                  tooltip: 'Strikethrough',
+                  if (widget.isBold)
+                    _textPill(
+                      'B',
+                      () => _toggleStyle('bold'),
+                      tooltip: 'Bold',
+                      bold: true,
+                      active:
+                          controller != null &&
+                          (controller.selection.isValid &&
+                                  !controller.selection.isCollapsed
+                              ? controller.isStyleActive('bold')
+                              : controller.typingStyles.contains('bold')),
+                    ),
 
-                  active:
-                      controller != null &&
-                      (controller.selection.isValid &&
-                              !controller.selection.isCollapsed
-                          ? controller.isStyleActive('strike')
-                          : controller.typingStyles.contains('strike')),
-                ),
+                  if (widget.isItalic)
+                    _textPill(
+                      'I',
+                      () => _toggleStyle('italic'),
+                      tooltip: 'Italic',
+                      italic: true,
+                      active:
+                          controller != null &&
+                          (controller.selection.isValid &&
+                                  !controller.selection.isCollapsed
+                              ? controller.isStyleActive('italic')
+                              : controller.typingStyles.contains('italic')),
+                    ),
+
+                  if (widget.isUnderLine)
+                    _textPill(
+                      'U',
+                      () => _toggleStyle('underline'),
+                      tooltip: 'Underline',
+                      underline: true,
+                      active:
+                          controller != null &&
+                          (controller.selection.isValid &&
+                                  !controller.selection.isCollapsed
+                              ? controller.isStyleActive('underline')
+                              : controller.typingStyles.contains('underline')),
+                    ),
+
+                  if (widget.isStrikeThrough)
+                    _textPill(
+                      'S',
+                      () => _toggleStyle('strike'),
+                      tooltip: 'Strikethrough',
+                      active:
+                          controller != null &&
+                          (controller.selection.isValid &&
+                                  !controller.selection.isCollapsed
+                              ? controller.isStyleActive('strike')
+                              : controller.typingStyles.contains('strike')),
+                    ),
+                ],
                 _verticalDivider(),
                 _iconPill(
                   Icons.format_list_bulleted_rounded,
