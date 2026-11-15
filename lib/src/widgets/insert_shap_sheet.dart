@@ -111,21 +111,55 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
     }
   }
 
+  final Color _fillColor = const Color(0xFFE11D48);
+  final Color _borderColor = const Color(0xFF1D4ED8);
+
   String _generateShapeMarkup() {
-    final hexFill = _white == Colors.transparent
+    final hexFill = _fillColor == Colors.transparent
         ? 'transparent'
-        : _colorToHex(_white).toLowerCase();
-    final hexBorder = _colorToHex(_grey).toLowerCase();
+        : _colorToHex(_fillColor).toLowerCase();
+    final hexBorder = _colorToHex(_borderColor).toLowerCase();
     final hexText = _colorToHex(_textColor).toLowerCase();
     final alignStr = _textAlign.name;
     final bStyle = _borderStyle == BorderStyle.solid ? 'solid' : 'none';
     final points = _getSvgPoints(_selectedShape);
+
     final escapedText = _shapeText
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;');
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
 
-    return '<p><span><span data-type="shape" data-shape="${_selectedShape.name}" data-width="180px" data-height="100px" data-fill-color="$hexFill" data-border-color="$hexBorder" data-border-width="${_borderWidth.toInt()}px" data-border-style="$bStyle" data-border-radius="0px" data-margin="8px" data-text-color="$hexText" data-font-size="${_fontSize.toInt()}px" data-font-weight="normal" data-text-align="$alignStr" data-wrap="inline" data-side="left" data-anchor="text" data-x="0" data-y="0" class="rich-shape" style="position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle; width: 180px; height: 100px; max-width: 100%; margin: 4px 8px;"><span class="rich-shape-box" style="position: relative; display: block; width: 100%; height: 100%; box-sizing: border-box;"><svg viewbox="0 0 100 100" preserveaspectratio="none" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; overflow: visible;"><polygon points="$points" fill="$hexFill" stroke="$hexBorder" stroke-width="${_borderWidth.toInt()}px" stroke-dasharray="none" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polygon></svg><span class="rich-shape-text" style="position: absolute; inset: 0px; display: flex; align-items: center; justify-content: center; padding: 6px 12px; box-sizing: border-box; overflow: hidden; text-align: $alignStr; color: $hexText; font-size: ${_fontSize.toInt()}px; font-weight: normal; line-height: 1.3; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">$escapedText</span></span></span></span></p>';
+    return '<p><span><span '
+        'data-type="shape" '
+        'data-shape="${_selectedShape.name}" '
+        'data-width="180px" '
+        'data-height="100px" '
+        'data-fill-color="$hexFill" '
+        'data-border-color="$hexBorder" '
+        'data-border-width="${_borderWidth.toInt()}px" '
+        'data-border-style="$bStyle" '
+        'data-border-radius="0px" '
+        'data-margin="8px" '
+        'data-text-color="$hexText" '
+        'data-shape-text="$escapedText" '
+        'data-font-size="${_fontSize.toInt()}px" '
+        'data-font-weight="normal" '
+        'data-text-align="$alignStr" '
+        'data-wrap="inline" '
+        'data-side="left" '
+        'data-anchor="text" '
+        'data-x="0" '
+        'data-y="0" '
+        'class="rich-shape" '
+        'style="position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle; width: 180px; height: 100px; max-width: 100%; margin: 4px 8px;">'
+        '<span class="rich-shape-box" style="position: relative; display: block; width: 100%; height: 100%; box-sizing: border-box;">'
+        '<svg viewbox="0 0 100 100" preserveaspectratio="none" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; overflow: visible;">'
+        '<polygon points="$points" fill="$hexFill" stroke="$hexBorder" stroke-width="${_borderWidth.toInt()}px" stroke-dasharray="none" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polygon>'
+        '</svg>'
+        '<span class="rich-shape-text" style="position: absolute; inset: 0px; display: flex; align-items: center; justify-content: center; padding: 6px 12px; box-sizing: border-box; overflow: hidden; text-align: $alignStr; color: $hexText; font-size: ${_fontSize.toInt()}px; font-weight: normal; line-height: 1.3; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">$escapedText</span>'
+        '</span></span></span></p>';
   }
 
   void _showColorPicker({

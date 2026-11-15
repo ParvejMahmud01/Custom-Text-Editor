@@ -18,6 +18,12 @@ class EditorBlock {
   double shapeWidth;
   double shapeHeight;
   double fontSize;
+  int shapeBorderColor;
+  double shapeBorderWidth;
+  double shapeBorderRadius;
+  String shapeBorderStyle;
+  int shapeTextColor;
+  TextAlign shapeTextAlign;
 
   bool bold;
   bool italic;
@@ -53,6 +59,12 @@ class EditorBlock {
     this.imageRadius,
     this.imageBorder,
     this.imageAlignment,
+    this.shapeBorderColor = 0xFF1D4ED8,
+    this.shapeBorderWidth = 2,
+    this.shapeBorderRadius = 0,
+    this.shapeBorderStyle = 'solid',
+    this.shapeTextColor = 0xFF000000,
+    this.shapeTextAlign = TextAlign.center,
   }) : id = id ?? const Uuid().v4(),
        styles = styles ?? [];
 
@@ -80,6 +92,12 @@ class EditorBlock {
     'imageRadius': imageRadius,
     'imageBorder': imageBorder,
     'imageAlignment': imageAlignment,
+    'shapeBorderColor': shapeBorderColor,
+    'shapeBorderWidth': shapeBorderWidth,
+    'shapeBorderRadius': shapeBorderRadius,
+    'shapeBorderStyle': shapeBorderStyle,
+    'shapeTextColor': shapeTextColor,
+    'shapeTextAlign': shapeTextAlign.name,
   };
 
   factory EditorBlock.fromJson(Map<String, dynamic> json) {
@@ -123,6 +141,15 @@ class EditorBlock {
       imageRadius: (json['imageRadius'] as num?)?.toDouble(),
       imageBorder: json['imageBorder'],
       imageAlignment: json['imageAlignment'],
+      shapeBorderColor: json['shapeBorderColor'] ?? 0xFF1D4ED8,
+      shapeBorderWidth: (json['shapeBorderWidth'] ?? 2).toDouble(),
+      shapeBorderRadius: (json['shapeBorderRadius'] ?? 0).toDouble(),
+      shapeBorderStyle: json['shapeBorderStyle'] ?? 'solid',
+      shapeTextColor: json['shapeTextColor'] ?? 0xFF000000,
+      shapeTextAlign: TextAlign.values.firstWhere(
+        (e) => e.name == json['shapeTextAlign'],
+        orElse: () => TextAlign.center,
+      ),
     );
   }
 }

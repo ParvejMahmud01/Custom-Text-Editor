@@ -1,22 +1,24 @@
 import 'dart:math' as math;
 
-import 'package:html_text_editor/src/text_editor/editor_enums.dart';
 import 'package:flutter/material.dart';
+import 'package:html_text_editor/src/text_editor/editor_enums.dart';
 
 class ShapePreviewPainter extends CustomPainter {
   final Color color;
   final EditorShapeType shape;
+  final Color borderColor;
+  final double borderWidth;
+  final String borderStyle;
 
-  const ShapePreviewPainter({required this.color, required this.shape});
+  const ShapePreviewPainter({
+    required this.color,
+    required this.shape,
+    this.borderColor = Colors.blue,
+    this.borderWidth = 2,
+    this.borderStyle = 'solid',
+  });
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeJoin = StrokeJoin.round;
-
+  Path _getPath(Size size) {
     final path = Path();
 
     switch (shape) {
@@ -61,15 +63,56 @@ class ShapePreviewPainter extends CustomPainter {
         path.close();
         break;
 
+      case EditorShapeType.arrow:
+        path
+          ..moveTo(0, size.height * 0.35)
+          ..lineTo(size.width * 0.6, size.height * 0.35)
+          ..lineTo(size.width * 0.6, size.height * 0.15)
+          ..lineTo(size.width, size.height * 0.5)
+          ..lineTo(size.width * 0.6, size.height * 0.85)
+          ..lineTo(size.width * 0.6, size.height * 0.65)
+          ..lineTo(0, size.height * 0.65)
+          ..close();
+        break;
+
       default:
-        return;
+        path.addRect(Offset.zero & size);
     }
 
-    canvas.drawPath(path, paint);
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = _getPath(size);
+
+    // Fill
+    if (color != Colors.transparent) {
+      final fillPaint = Paint()
+        ..color = color
+        ..style = PaintingStyle.fill;
+
+      canvas.drawPath(path, fillPaint);
+    }
+
+    // Border
+    if (borderWidth > 0 && borderStyle != 'none') {
+      final borderPaint = Paint()
+        ..color = borderColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = borderWidth
+        ..strokeJoin = StrokeJoin.round;
+
+      canvas.drawPath(path, borderPaint);
+    }
   }
 
   @override
   bool shouldRepaint(covariant ShapePreviewPainter oldDelegate) {
-    return oldDelegate.color != color || oldDelegate.shape != shape;
+    return oldDelegate.color != color ||
+        oldDelegate.shape != shape ||
+        oldDelegate.borderColor != borderColor ||
+        oldDelegate.borderWidth != borderWidth ||
+        oldDelegate.borderStyle != borderStyle;
   }
 }

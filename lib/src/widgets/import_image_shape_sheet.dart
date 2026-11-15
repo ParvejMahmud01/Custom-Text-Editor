@@ -527,7 +527,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                             'Left Align',
                             'Right Align',
                             'Center Block',
-                            'Full Width',
+                            // 'Full Width',
                           ],
                           onChanged: (v) {
                             if (v != null) {
