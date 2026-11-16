@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:html_text_editor/src/text_editor/editor_enums.dart';
 import 'package:flutter/material.dart';
+import 'package:html_text_editor/src/text_editor/editor_enums.dart';
 
 class ShapeCanvasPainter extends CustomPainter {
   final AppShapeType shapeType;
@@ -30,165 +30,181 @@ class ShapeCanvasPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0) return;
 
+    final path = _createPath(size);
+
     final fillPaint = Paint()
       ..color = fillColor
       ..style = PaintingStyle.fill;
 
-    final hasBorder = borderWidth > 0 && borderColor.a > 0;
-    final borderPaint = Paint()
-      ..color = borderColor
-      ..strokeWidth = borderWidth
-      ..style = PaintingStyle.stroke;
-
-    final path = _createPath(size);
-
-    // Draw Fill
     if (fillColor != Colors.transparent && fillColor.a > 0) {
       canvas.drawPath(path, fillPaint);
     }
 
-    // Draw Border
-    if (hasBorder) {
-      if (borderStyle == BorderStyle.solid) {
-        canvas.drawPath(path, borderPaint);
-      } else {
-        // Dashed border simulation
-        canvas.drawPath(path, borderPaint);
-      }
+    _drawBorder(canvas, path);
+
+    _drawText(canvas, size);
+  }
+
+  void _drawBorder(Canvas canvas, Path path) {
+    if (borderStyle == BorderStyle.none ||
+        borderWidth <= 0 ||
+        borderColor.a <= 0) {
+      return;
     }
 
-    // Draw Text on Shape
-    if (text.trim().isNotEmpty) {
-      final textSpan = TextSpan(
-        text: text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Inter',
-        ),
-      );
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..strokeWidth = borderWidth
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round;
 
-      final textPainter = TextPainter(
-        text: textSpan,
-        textAlign: textAlign,
-        textDirection: TextDirection.ltr,
-      )..layout(maxWidth: size.width - (borderWidth * 2) - 16);
+    canvas.drawPath(path, borderPaint);
+  }
 
-      final offset = Offset(
-        (size.width - textPainter.width) / 2,
-        (size.height - textPainter.height) / 2,
-      );
+  void _drawText(Canvas canvas, Size size) {
+    if (text.trim().isEmpty) return;
 
-      textPainter.paint(canvas, offset);
+    final availableWidth = math.max(0.0, size.width - (borderWidth * 2) - 16);
+
+    final textSpan = TextSpan(
+      text: text,
+      style: TextStyle(
+        color: textColor,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Inter',
+      ),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textAlign: textAlign,
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    )..layout(maxWidth: availableWidth);
+
+    double dx;
+
+    switch (textAlign) {
+      case TextAlign.left:
+      case TextAlign.start:
+        dx = 8 + borderWidth;
+        break;
+      case TextAlign.right:
+      case TextAlign.end:
+        dx = size.width - textPainter.width - 8 - borderWidth;
+        break;
+      case TextAlign.center:
+      case TextAlign.justify:
+        dx = (size.width - textPainter.width) / 2;
+        break;
     }
+
+    final dy = (size.height - textPainter.height) / 2;
+
+    textPainter.paint(canvas, Offset(dx, dy));
   }
 
   Path _createPath(Size size) {
-    final w = size.width;
-    final h = size.height;
-    final path = Path();
+    final width = size.width;
+    final height = size.height;
+    final centerX = width / 2;
+    final centerY = height / 2;
 
     switch (shapeType) {
       case AppShapeType.square:
-        path.addRect(Rect.fromLTWH(0, 0, w, h));
-        break;
+        return Path()..addRect(Rect.fromLTWH(0, 0, width, height));
 
       case AppShapeType.circle:
-        path.addOval(Rect.fromLTWH(0, 0, w, h));
-        break;
+        return Path()..addOval(Rect.fromLTWH(0, 0, width, height));
 
       case AppShapeType.triangle:
-        path.moveTo(w / 2, 0);
-        path.lineTo(w, h);
-        path.lineTo(0, h);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(centerX, 0)
+          ..lineTo(width, height)
+          ..lineTo(0, height)
+          ..close();
 
       case AppShapeType.horizontalLine:
-        path.moveTo(0, h / 2);
-        path.lineTo(w, h / 2);
-        break;
+        return Path()
+          ..moveTo(0, centerY)
+          ..lineTo(width, centerY);
 
       case AppShapeType.diamond:
-        path.moveTo(w / 2, 0);
-        path.lineTo(w, h / 2);
-        path.lineTo(w / 2, h);
-        path.lineTo(0, h / 2);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(centerX, 0)
+          ..lineTo(width, centerY)
+          ..lineTo(centerX, height)
+          ..lineTo(0, centerY)
+          ..close();
 
       case AppShapeType.arrowRight:
-        path.moveTo(0, h * 0.3);
-        path.lineTo(w * 0.6, h * 0.3);
-        path.lineTo(w * 0.6, 0);
-        path.lineTo(w, h * 0.5);
-        path.lineTo(w * 0.6, h);
-        path.lineTo(w * 0.6, h * 0.7);
-        path.lineTo(0, h * 0.7);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(0, height * 0.3)
+          ..lineTo(width * 0.65, height * 0.3)
+          ..lineTo(width * 0.65, 0)
+          ..lineTo(width, centerY)
+          ..lineTo(width * 0.65, height)
+          ..lineTo(width * 0.65, height * 0.7)
+          ..lineTo(0, height * 0.7)
+          ..close();
 
       case AppShapeType.arrowLeft:
-        path.moveTo(w, h * 0.3);
-        path.lineTo(w * 0.4, h * 0.3);
-        path.lineTo(w * 0.4, 0);
-        path.lineTo(0, h * 0.5);
-        path.lineTo(w * 0.4, h);
-        path.lineTo(w * 0.4, h * 0.7);
-        path.lineTo(w, h * 0.7);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(width, height * 0.3)
+          ..lineTo(width * 0.35, height * 0.3)
+          ..lineTo(width * 0.35, 0)
+          ..lineTo(0, centerY)
+          ..lineTo(width * 0.35, height)
+          ..lineTo(width * 0.35, height * 0.7)
+          ..lineTo(width, height * 0.7)
+          ..close();
 
       case AppShapeType.arrowUp:
-        path.moveTo(w * 0.3, h);
-        path.lineTo(w * 0.3, h * 0.4);
-        path.lineTo(0, h * 0.4);
-        path.lineTo(w * 0.5, 0);
-        path.lineTo(w, h * 0.4);
-        path.lineTo(w * 0.7, h * 0.4);
-        path.lineTo(w * 0.7, h);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(width * 0.3, height)
+          ..lineTo(width * 0.3, height * 0.35)
+          ..lineTo(0, height * 0.35)
+          ..lineTo(centerX, 0)
+          ..lineTo(width, height * 0.35)
+          ..lineTo(width * 0.7, height * 0.35)
+          ..lineTo(width * 0.7, height)
+          ..close();
 
       case AppShapeType.arrowDown:
-        path.moveTo(w * 0.3, 0);
-        path.lineTo(w * 0.3, h * 0.6);
-        path.lineTo(0, h * 0.6);
-        path.lineTo(w * 0.5, h);
-        path.lineTo(w, h * 0.6);
-        path.lineTo(w * 0.7, h * 0.6);
-        path.lineTo(w * 0.7, 0);
-        path.close();
-        break;
+        return Path()
+          ..moveTo(width * 0.3, 0)
+          ..lineTo(width * 0.7, 0)
+          ..lineTo(width * 0.7, height * 0.65)
+          ..lineTo(width, height * 0.65)
+          ..lineTo(centerX, height)
+          ..lineTo(0, height * 0.65)
+          ..lineTo(width * 0.3, height * 0.65)
+          ..close();
 
       case AppShapeType.star:
-        final cx = w / 2;
-        final cy = h / 2;
-        final outerRadius = math.min(cx, cy);
-        final innerRadius = outerRadius * 0.45;
-        const numPoints = 5;
-        var rot = math.pi / 2 * 3;
-        final step = math.pi / numPoints;
+        final path = Path();
+        const points = 10;
+        final outerRadius = math.min(width, height) / 2;
+        final innerRadius = outerRadius * 0.4;
 
-        path.moveTo(cx, cy - outerRadius);
-        for (var i = 0; i < numPoints; i++) {
-          path.lineTo(
-            cx + math.cos(rot) * outerRadius,
-            cy + math.sin(rot) * outerRadius,
-          );
-          rot += step;
-          path.lineTo(
-            cx + math.cos(rot) * innerRadius,
-            cy + math.sin(rot) * innerRadius,
-          );
-          rot += step;
+        for (int i = 0; i < points; i++) {
+          final radius = i.isEven ? outerRadius : innerRadius;
+          final angle = -math.pi / 2 + (math.pi / points * i);
+
+          final x = centerX + radius * math.cos(angle);
+          final y = centerY + radius * math.sin(angle);
+
+          if (i == 0) {
+            path.moveTo(x, y);
+          } else {
+            path.lineTo(x, y);
+          }
         }
-        path.close();
-        break;
-    }
 
-    return path;
+        path.close();
+        return path;
+    }
   }
 
   @override

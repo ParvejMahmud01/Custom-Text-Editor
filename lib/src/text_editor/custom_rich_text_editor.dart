@@ -446,11 +446,12 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
 
       double parseDimension(String? value, double fallback) {
         if (value == null) return fallback;
+
         return double.tryParse(value.replaceAll('px', '').trim()) ?? fallback;
       }
 
       int parseColor(String? value, int fallback) {
-        if (value == null) return fallback;
+        if (value == null || value.isEmpty) return fallback;
         if (value == 'transparent') return 0x00000000;
 
         final hex = value.replaceFirst('#', '');
@@ -480,12 +481,31 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
         _ => EditorShapeType.rectangle,
       };
 
+      final shapeArrowDirection =
+          switch (getAttribute('data-arrow-direction') ?? shape) {
+            'arrowLeft' || 'left' => 'left',
+            'arrowUp' || 'up' => 'up',
+            'arrowDown' || 'down' => 'down',
+            _ => 'right',
+          };
+
+      final shapeAlignment = getAttribute('data-shape-alignment') ?? 'center';
+
       final shapeText = decodeHtml(getAttribute('data-shape-text') ?? '');
+
+      final textAlign = switch (getAttribute('data-text-align')) {
+        'left' => TextAlign.left,
+        'right' => TextAlign.right,
+        'justify' => TextAlign.justify,
+        _ => TextAlign.center,
+      };
 
       _insertBlock(
         EditorBlock(
           type: EditorBlockType.shape,
           shapeType: shapeType,
+          shapeArrowDirection: shapeArrowDirection,
+          shapeAlignment: shapeAlignment,
           shapeColor: parseColor(getAttribute('data-fill-color'), 0xFFE11D48),
           shapeBorderColor: parseColor(
             getAttribute('data-border-color'),
@@ -508,11 +528,7 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
             0xFF000000,
           ),
           fontSize: parseDimension(getAttribute('data-font-size'), 16),
-          shapeTextAlign: switch (getAttribute('data-text-align')) {
-            'left' => TextAlign.left,
-            'right' => TextAlign.right,
-            _ => TextAlign.center,
-          },
+          shapeTextAlign: textAlign,
         ),
       );
     });
@@ -587,7 +603,14 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
       case EditorShapeType.star:
         return CustomPaint(
           size: const Size(40, 35),
-          painter: ShapePreviewPainter(color: color, shape: type),
+          painter: ShapePreviewPainter(
+            color: color,
+            shape: type,
+            borderColor: color,
+            borderWidth: 2,
+            borderStyle: 'solid',
+            arrowDirection: 'right',
+          ),
         );
     }
   }
@@ -1590,74 +1613,84 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
       ),
     );
 
-    final shape = Container(
-      width: block.shapeWidth,
-      height: block.shapeHeight,
-      decoration: BoxDecoration(
-        color: block.shapeColor == 0x00000000 ? null : fillColor,
-        border: block.shapeBorderWidth > 0 && block.shapeBorderStyle != 'none'
-            ? Border.all(color: borderColor, width: block.shapeBorderWidth)
-            : null,
-        borderRadius: block.shapeType == EditorShapeType.circle
-            ? null
-            : BorderRadius.circular(block.shapeBorderRadius),
-        shape: block.shapeType == EditorShapeType.circle
-            ? BoxShape.circle
-            : BoxShape.rectangle,
-      ),
-      child: Center(
-        child: Padding(padding: const EdgeInsets.all(4), child: textWidget),
-      ),
+    final shapeContent = Center(
+      child: Padding(padding: const EdgeInsets.all(4), child: textWidget),
     );
 
-    Widget shapeWidget;
+    final bool isCustomShape = switch (block.shapeType) {
+      EditorShapeType.arrow ||
+      EditorShapeType.diamond ||
+      EditorShapeType.triangle ||
+      EditorShapeType.star ||
+      EditorShapeType.line => true,
+      _ => false,
+    };
 
-    switch (block.shapeType) {
-      case EditorShapeType.rectangle:
-      case EditorShapeType.roundedRectangle:
-      case EditorShapeType.circle:
-        shapeWidget = shape;
-        break;
+    final Widget shapeWidget;
 
-      case EditorShapeType.line:
-        shapeWidget = Container(
+    if (isCustomShape) {
+      shapeWidget = CustomPaint(
+        size: Size(block.shapeWidth, block.shapeHeight),
+        painter: ShapePreviewPainter(
+          color: fillColor,
+          shape: block.shapeType,
+          borderColor: borderColor,
+          borderWidth: block.shapeBorderWidth,
+          borderStyle: block.shapeBorderStyle,
+          arrowDirection: block.shapeArrowDirection,
+        ),
+        child: SizedBox(
           width: block.shapeWidth,
-          height: block.shapeBorderWidth > 0 ? block.shapeBorderWidth : 2,
-          color: borderColor,
-        );
-        break;
-
-      case EditorShapeType.arrow:
-      case EditorShapeType.diamond:
-      case EditorShapeType.triangle:
-      case EditorShapeType.star:
-        shapeWidget = CustomPaint(
-          size: Size(block.shapeWidth, block.shapeHeight),
-          painter: ShapePreviewPainter(
-            color: fillColor,
-            shape: block.shapeType,
-            borderColor: borderColor,
-            borderWidth: block.shapeBorderWidth,
-            borderStyle: block.shapeBorderStyle,
-          ),
-          child: SizedBox(
-            width: block.shapeWidth,
-            height: block.shapeHeight,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: textWidget,
-              ),
-            ),
-          ),
-        );
-        break;
+          height: block.shapeHeight,
+          child: shapeContent,
+        ),
+      );
+    } else {
+      shapeWidget = Container(
+        width: block.shapeWidth,
+        height: block.shapeHeight,
+        decoration: BoxDecoration(
+          color: block.shapeColor == 0x00000000 ? null : fillColor,
+          border:
+              block.shapeBorderWidth > 0 && block.shapeBorderStyle == 'solid'
+              ? Border.all(color: borderColor, width: block.shapeBorderWidth)
+              : null,
+          borderRadius: block.shapeType == EditorShapeType.circle
+              ? null
+              : BorderRadius.circular(block.shapeBorderRadius),
+          shape: block.shapeType == EditorShapeType.circle
+              ? BoxShape.circle
+              : BoxShape.rectangle,
+        ),
+        child: shapeContent,
+      );
     }
+
+    final Alignment alignment = switch (block.shapeAlignment) {
+      'left' => Alignment.centerLeft,
+      'right' => Alignment.centerRight,
+      'top' => Alignment.topCenter,
+      'bottom' => Alignment.bottomCenter,
+      'topLeft' => Alignment.topLeft,
+      'topRight' => Alignment.topRight,
+      'bottomLeft' => Alignment.bottomLeft,
+      'bottomRight' => Alignment.bottomRight,
+      _ => Alignment.center,
+    };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(padding: const EdgeInsets.all(8), child: shapeWidget),
+        SizedBox(
+          width: double.infinity,
+          child: Align(
+            alignment: alignment,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: shapeWidget,
+            ),
+          ),
+        ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [

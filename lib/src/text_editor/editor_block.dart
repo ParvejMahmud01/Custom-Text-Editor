@@ -36,6 +36,8 @@ class EditorBlock {
   final double? imageRadius;
   final String? imageBorder;
   final String? imageAlignment;
+  String shapeAlignment;
+  String shapeArrowDirection;
   EditorBlock({
     String? id,
     this.type = EditorBlockType.paragraph,
@@ -65,6 +67,8 @@ class EditorBlock {
     this.shapeBorderStyle = 'solid',
     this.shapeTextColor = 0xFF000000,
     this.shapeTextAlign = TextAlign.center,
+    this.shapeAlignment = 'center',
+    this.shapeArrowDirection = 'right',
   }) : id = id ?? const Uuid().v4(),
        styles = styles ?? [];
 
@@ -98,6 +102,8 @@ class EditorBlock {
     'shapeBorderStyle': shapeBorderStyle,
     'shapeTextColor': shapeTextColor,
     'shapeTextAlign': shapeTextAlign.name,
+    'shapeAlignment': shapeAlignment,
+    'shapeArrowDirection': shapeArrowDirection,
   };
 
   factory EditorBlock.fromJson(Map<String, dynamic> json) {
@@ -150,6 +156,8 @@ class EditorBlock {
         (e) => e.name == json['shapeTextAlign'],
         orElse: () => TextAlign.center,
       ),
+      shapeAlignment: json['shapeAlignment'] ?? 'center',
+      shapeArrowDirection: json['shapeArrowDirection'] ?? 'right',
     );
   }
 }

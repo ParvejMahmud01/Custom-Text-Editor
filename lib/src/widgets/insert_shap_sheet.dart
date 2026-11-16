@@ -115,13 +115,23 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
   final Color _borderColor = const Color(0xFF1D4ED8);
 
   String _generateShapeMarkup() {
-    final hexFill = _fillColor == Colors.transparent
+    final hexFill = _white == Colors.transparent
         ? 'transparent'
-        : _colorToHex(_fillColor).toLowerCase();
-    final hexBorder = _colorToHex(_borderColor).toLowerCase();
+        : _colorToHex(_white).toLowerCase();
+
+    final hexBorder = _colorToHex(_grey).toLowerCase();
     final hexText = _colorToHex(_textColor).toLowerCase();
+
     final alignStr = _textAlign.name;
-    final bStyle = _borderStyle == BorderStyle.solid ? 'solid' : 'none';
+    final justifyContent = switch (_textAlign) {
+      TextAlign.left => 'flex-start',
+      TextAlign.right => 'flex-end',
+      _ => 'center',
+    };
+
+    final borderStyle = _borderStyle == BorderStyle.none ? 'none' : 'solid';
+    final borderWidth = _borderStyle == BorderStyle.none ? 0 : _borderWidth;
+
     final points = _getSvgPoints(_selectedShape);
 
     final escapedText = _shapeText
@@ -138,8 +148,8 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
         'data-height="100px" '
         'data-fill-color="$hexFill" '
         'data-border-color="$hexBorder" '
-        'data-border-width="${_borderWidth.toInt()}px" '
-        'data-border-style="$bStyle" '
+        'data-border-width="${borderWidth}px" '
+        'data-border-style="$borderStyle" '
         'data-border-radius="0px" '
         'data-margin="8px" '
         'data-text-color="$hexText" '
@@ -155,10 +165,10 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
         'class="rich-shape" '
         'style="position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle; width: 180px; height: 100px; max-width: 100%; margin: 4px 8px;">'
         '<span class="rich-shape-box" style="position: relative; display: block; width: 100%; height: 100%; box-sizing: border-box;">'
-        '<svg viewbox="0 0 100 100" preserveaspectratio="none" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; overflow: visible;">'
-        '<polygon points="$points" fill="$hexFill" stroke="$hexBorder" stroke-width="${_borderWidth.toInt()}px" stroke-dasharray="none" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polygon>'
+        '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;">'
+        '<polygon points="$points" fill="$hexFill" stroke="${borderStyle == 'none' ? 'none' : hexBorder}" stroke-width="${borderWidth}px" stroke-dasharray="none" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polygon>'
         '</svg>'
-        '<span class="rich-shape-text" style="position: absolute; inset: 0px; display: flex; align-items: center; justify-content: center; padding: 6px 12px; box-sizing: border-box; overflow: hidden; text-align: $alignStr; color: $hexText; font-size: ${_fontSize.toInt()}px; font-weight: normal; line-height: 1.3; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">$escapedText</span>'
+        '<span class="rich-shape-text" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: $justifyContent; padding: 6px 12px; box-sizing: border-box; overflow: hidden; text-align: $alignStr; color: $hexText; font-size: ${_fontSize.toInt()}px; font-weight: normal; line-height: 1.3; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">$escapedText</span>'
         '</span></span></span></p>';
   }
 
@@ -776,6 +786,7 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
               ],
             ),
           ),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -795,7 +806,7 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
                 duration: const Duration(milliseconds: 150),
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.lightBlue : Colors.white,
+                  color: isSelected ? Colors.deepPurple : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: isSelected ? Colors.deepPurple : Colors.grey,
@@ -808,7 +819,7 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
                     Icon(
                       shape.icon,
                       size: 20,
-                      color: isSelected ? Colors.deepPurple : Colors.black,
+                      color: isSelected ? Colors.white : Colors.black,
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -818,7 +829,7 @@ class _InsertShapeSheetState extends State<InsertShapeSheet> {
                         fontWeight: isSelected
                             ? FontWeight.w700
                             : FontWeight.w500,
-                        color: isSelected ? Colors.deepPurple : Colors.black,
+                        color: isSelected ? Colors.white : Colors.black,
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
