@@ -7,38 +7,21 @@
         {
             "name": "custom_editor",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "example/lib/main.dart"
         },
         {
             "name": "custom_editor (profile mode)",
             "request": "launch",
             "type": "dart",
+            "program": "example/lib/main.dart",
             "flutterMode": "profile"
         },
         {
             "name": "custom_editor (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
-        },
-        {
-            "name": "custom_rich_text_editor",
-            "cwd": "custom_rich_text_editor",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "custom_rich_text_editor (profile mode)",
-            "cwd": "custom_rich_text_editor",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "custom_rich_text_editor (release mode)",
-            "cwd": "custom_rich_text_editor",
-            "request": "launch",
-            "type": "dart",
+            "program": "example/lib/main.dart",
             "flutterMode": "release"
         }
     ]

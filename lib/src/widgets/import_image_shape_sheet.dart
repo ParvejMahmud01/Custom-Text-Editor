@@ -11,19 +11,23 @@ class ImportPositionImageSheet extends StatefulWidget {
   const ImportPositionImageSheet({
     super.key,
     required this.onInsertImage,
-    this.borderColor = Colors.red,
-    this.selectedTabColor = Colors.red,
+    this.borderColor = Colors.black,
+    this.selectedTabColor = Colors.deepPurple,
   });
 
   static Future<void> show(
-    BuildContext context,
-    ValueChanged<String> onInsert,
-  ) {
+    BuildContext context, {
+    required ValueChanged<String> onInsert,
+    Color? borderColor,
+    Color? selectedTabColor,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => ImportPositionImageSheet(
+        selectedTabColor: selectedTabColor ?? Colors.deepPurple,
+        borderColor: borderColor ?? Colors.black,
         onInsertImage: (markup) {
           Navigator.pop(ctx);
           onInsert(markup);
@@ -703,7 +707,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
                   child: ElevatedButton(
                     onPressed: _insertImage,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      backgroundColor: widget.selectedTabColor,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -757,7 +761,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? Colors.black : Colors.black,
+              color: isSelected ? Colors.white : Colors.black,
             ),
             const SizedBox(width: 6),
             Text(
@@ -765,7 +769,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? Colors.black : Colors.black,
+                color: isSelected ? Colors.white : Colors.black,
               ),
             ),
           ],
@@ -778,7 +782,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
     return Text(
       text,
       style: GoogleFonts.inter(
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: FontWeight.w700,
         color: Colors.black,
         letterSpacing: 0.5,
@@ -808,7 +812,7 @@ class _ImportPositionImageSheetState extends State<ImportPositionImageSheet> {
             child: DropdownButton<String>(
               value: value,
               isExpanded: true,
-              style: GoogleFonts.inter(fontSize: 11.5, color: Colors.black),
+              style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
               items: items.map((item) {
                 return DropdownMenuItem<String>(
                   value: item,

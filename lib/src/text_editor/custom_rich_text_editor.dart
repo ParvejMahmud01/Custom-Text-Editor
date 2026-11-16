@@ -38,7 +38,8 @@ class CustomRichTextEditor extends StatefulWidget {
   final bool isSelectFontSize;
   final bool textColor;
   final bool heighlight;
-
+  final Color? borderColor;
+  final Color? selectedTabColor;
   const CustomRichTextEditor({
     super.key,
     this.initialText = '',
@@ -63,6 +64,8 @@ class CustomRichTextEditor extends StatefulWidget {
     this.isSelectFontSize = true,
     this.textColor = true,
     this.heighlight = true,
+    this.borderColor,
+    this.selectedTabColor,
   });
 
   @override
@@ -397,28 +400,33 @@ class CustomRichTextEditorState extends State<CustomRichTextEditor> {
   }
 
   Future<void> _insertImage() async {
-    await ImportPositionImageSheet.show(context, (markup) {
-      String? getAttribute(String name) {
-        return RegExp('$name="([^"]*)"').firstMatch(markup)?.group(1);
-      }
+    await ImportPositionImageSheet.show(
+      context,
+      borderColor: widget.borderColor,
+      selectedTabColor: widget.selectedTabColor,
+      onInsert: (markup) {
+        String? getAttribute(String name) {
+          return RegExp('$name="([^"]*)"').firstMatch(markup)?.group(1);
+        }
 
-      final src = getAttribute('src');
-      if (src == null) return;
+        final src = getAttribute('src');
+        if (src == null) return;
 
-      _insertBlock(
-        EditorBlock(
-          type: EditorBlockType.image,
-          imagePath: src.replaceAll('&amp;', '&').replaceAll('&quot;', '"'),
-          imageWidth: getAttribute('data-image-width'),
-          imageMargin: getAttribute('data-image-margin'),
-          imageRadius: double.tryParse(
-            (getAttribute('data-image-radius') ?? '0px').replaceAll('px', ''),
+        _insertBlock(
+          EditorBlock(
+            type: EditorBlockType.image,
+            imagePath: src.replaceAll('&amp;', '&').replaceAll('&quot;', '"'),
+            imageWidth: getAttribute('data-image-width'),
+            imageMargin: getAttribute('data-image-margin'),
+            imageRadius: double.tryParse(
+              (getAttribute('data-image-radius') ?? '0px').replaceAll('px', ''),
+            ),
+            imageBorder: getAttribute('data-image-border'),
+            imageAlignment: getAttribute('data-image-alignment'),
           ),
-          imageBorder: getAttribute('data-image-border'),
-          imageAlignment: getAttribute('data-image-alignment'),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Future<void> _insertShape() async {
