@@ -29,7 +29,7 @@ Add your short MP4 demo video here.
 ## Installation
 
 ```bash
-flutter pub add custom_rich_text_editor
+flutter pub add html_text_editor
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ flutter pub add custom_rich_text_editor
 Import the package:
 
 ```dart
-import 'package:custom_rich_text_editor/custom_rich_text_editor.dart';
+import 'package:html_text_editor/html_text_editor.dart';;
 ```
 
 ### Basic Example
