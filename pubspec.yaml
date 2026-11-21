@@ -1,6 +1,6 @@
 name: html_text_editor
 description: "A customizable rich text editor package for Flutter with text formatting and image support."
-version: 1.0.0
+version: 1.0.1
 
 homepage: https://github.com/ParvejMahmud01/Custom-Text-Editor
 repository: https://github.com/ParvejMahmud01/Custom-Text-Editor
